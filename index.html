@@ -71,7 +71,7 @@
           },
           spacing: {
             "section-gap": "100px",
-            "gutter": "24px",
+            "gutter": "28px",
             "stack-md": "16px",
             "stack-sm": "8px",
             "margin-desktop": "80px",
@@ -250,7 +250,46 @@
     ::-webkit-scrollbar-thumb:hover {
       background: #ffcd82;
     }
+
+    /* Suppress broken image icon and text */
+    img {
+      color: transparent;
+      font-size: 0;
+    }
   </style>
+
+  <!-- Automatic Image Path Resolver Script -->
+  <script>
+    function handleImgError(img, reelNum) {
+      const tries = parseInt(img.getAttribute('data-try') || '0', 10);
+      const searchPaths = [
+        `reel${reelNum}.jpg`,
+        `./reel${reelNum}.jpg`,
+        `../reel${reelNum}.jpg`,
+        `images/reel${reelNum}.jpg`,
+        `assets/reel${reelNum}.jpg`,
+        `../images/reel${reelNum}.jpg`,
+        `reel${reelNum}.png`,
+        `./reel${reelNum}.png`,
+        `../reel${reelNum}.png`,
+        `reel${reelNum}.jpeg`,
+        `./reel${reelNum}.jpeg`
+      ];
+
+      if (tries < searchPaths.length) {
+        img.setAttribute('data-try', tries + 1);
+        img.src = searchPaths[tries];
+      } else {
+        // Hide broken image element if file is missing from local folder
+        img.style.display = 'none';
+        const cardBox = img.closest('.reel-card-box');
+        if (cardBox) {
+          const fallback = cardBox.querySelector('.fallback-card-ui');
+          if (fallback) fallback.classList.remove('hidden');
+        }
+      }
+    }
+  </script>
 </head>
 
 <body class="antialiased min-h-screen flex flex-col pt-[90px] relative selection:bg-primary selection:text-black">
@@ -368,21 +407,26 @@
       </div>
     </div>
 
-    <!-- VIEW 2: 3D FLOATING REELS GRID (ONLY YOUR UPLOADED IMAGES, NO OVERLAY IMAGES) -->
+    <!-- VIEW 2: 3D FLOATING REELS GRID -->
     <div id="floatingGridView" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-gutter py-6">
 
       <!-- Reel 1 -->
       <div class="card-3d-wrapper" data-category="movies">
         <div class="float-container float-card-1">
-          <a href="https://www.instagram.com/nexussnips/reel/Db0f0pHEoAS/" target="_blank" rel="noopener noreferrer" class="block card-3d-inner overflow-hidden border border-white/10 bg-surface-container-low shadow-2xl group">
+          <a href="https://www.instagram.com/nexussnips/reel/Db0f0pHEoAS/" target="_blank" rel="noopener noreferrer" class="block card-3d-inner overflow-hidden border border-white/10 bg-surface-container-low shadow-2xl group reel-card-box">
             <div class="sheen"></div>
             
-            <div class="relative aspect-[9/16] w-full overflow-hidden">
-              <img src="../reel1.jpg" alt="Reel 1" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="relative aspect-[9/16] w-full overflow-hidden bg-[#1c1b1c]">
+              <img src="../reel1.jpg" alt="" onerror="handleImgError(this, 1)" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 z-10">
               
-              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              <div class="fallback-card-ui hidden absolute inset-0 flex flex-col items-center justify-center p-4 bg-gradient-to-b from-[#201f20] to-[#131314] text-center">
+                <span class="material-symbols-outlined text-4xl text-primary/40 mb-2">movie</span>
+                <span class="text-xs font-label-md tracking-widest text-on-surface-variant uppercase">Reel 01</span>
+              </div>
 
-              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20"></div>
+
+              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-30">
                 <div class="w-14 h-14 rounded-full bg-primary/95 text-black flex items-center justify-center shadow-[0_0_30px_rgba(255,205,130,0.85)] transform scale-75 group-hover:scale-100 transition-transform">
                   <span class="material-symbols-outlined text-3xl fill-1">play_arrow</span>
                 </div>
@@ -395,15 +439,20 @@
       <!-- Reel 2 -->
       <div class="card-3d-wrapper" data-category="trending">
         <div class="float-container float-card-2">
-          <a href="https://www.instagram.com/nexussnips/reel/Dbie8_uElHD/" target="_blank" rel="noopener noreferrer" class="block card-3d-inner overflow-hidden border border-white/10 bg-surface-container-low shadow-2xl group">
+          <a href="https://www.instagram.com/nexussnips/reel/Dbie8_uElHD/" target="_blank" rel="noopener noreferrer" class="block card-3d-inner overflow-hidden border border-white/10 bg-surface-container-low shadow-2xl group reel-card-box">
             <div class="sheen"></div>
             
-            <div class="relative aspect-[9/16] w-full overflow-hidden">
-              <img src="../reel2.jpg" alt="Reel 2" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="relative aspect-[9/16] w-full overflow-hidden bg-[#1c1b1c]">
+              <img src="../reel2.jpg" alt="" onerror="handleImgError(this, 2)" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 z-10">
               
-              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              <div class="fallback-card-ui hidden absolute inset-0 flex flex-col items-center justify-center p-4 bg-gradient-to-b from-[#201f20] to-[#131314] text-center">
+                <span class="material-symbols-outlined text-4xl text-primary/40 mb-2">movie</span>
+                <span class="text-xs font-label-md tracking-widest text-on-surface-variant uppercase">Reel 02</span>
+              </div>
 
-              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20"></div>
+
+              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-30">
                 <div class="w-14 h-14 rounded-full bg-primary/95 text-black flex items-center justify-center shadow-[0_0_30px_rgba(255,205,130,0.85)] transform scale-75 group-hover:scale-100 transition-transform">
                   <span class="material-symbols-outlined text-3xl fill-1">play_arrow</span>
                 </div>
@@ -416,15 +465,20 @@
       <!-- Reel 3 -->
       <div class="card-3d-wrapper" data-category="series">
         <div class="float-container float-card-3">
-          <a href="https://www.instagram.com/nexussnips/reel/Da0MVNWS1sZ/" target="_blank" rel="noopener noreferrer" class="block card-3d-inner overflow-hidden border border-white/10 bg-surface-container-low shadow-2xl group">
+          <a href="https://www.instagram.com/nexussnips/reel/Da0MVNWS1sZ/" target="_blank" rel="noopener noreferrer" class="block card-3d-inner overflow-hidden border border-white/10 bg-surface-container-low shadow-2xl group reel-card-box">
             <div class="sheen"></div>
             
-            <div class="relative aspect-[9/16] w-full overflow-hidden">
-              <img src="../reel3.jpg" alt="Reel 3" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="relative aspect-[9/16] w-full overflow-hidden bg-[#1c1b1c]">
+              <img src="../reel3.jpg" alt="" onerror="handleImgError(this, 3)" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 z-10">
               
-              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              <div class="fallback-card-ui hidden absolute inset-0 flex flex-col items-center justify-center p-4 bg-gradient-to-b from-[#201f20] to-[#131314] text-center">
+                <span class="material-symbols-outlined text-4xl text-primary/40 mb-2">movie</span>
+                <span class="text-xs font-label-md tracking-widest text-on-surface-variant uppercase">Reel 03</span>
+              </div>
 
-              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20"></div>
+
+              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-30">
                 <div class="w-14 h-14 rounded-full bg-primary/95 text-black flex items-center justify-center shadow-[0_0_30px_rgba(255,205,130,0.85)] transform scale-75 group-hover:scale-100 transition-transform">
                   <span class="material-symbols-outlined text-3xl fill-1">play_arrow</span>
                 </div>
@@ -437,15 +491,20 @@
       <!-- Reel 4 -->
       <div class="card-3d-wrapper" data-category="movies">
         <div class="float-container float-card-4">
-          <a href="https://www.instagram.com/nexussnips/reel/DUTcYY8kj6h/" target="_blank" rel="noopener noreferrer" class="block card-3d-inner overflow-hidden border border-white/10 bg-surface-container-low shadow-2xl group">
+          <a href="https://www.instagram.com/nexussnips/reel/DUTcYY8kj6h/" target="_blank" rel="noopener noreferrer" class="block card-3d-inner overflow-hidden border border-white/10 bg-surface-container-low shadow-2xl group reel-card-box">
             <div class="sheen"></div>
             
-            <div class="relative aspect-[9/16] w-full overflow-hidden">
-              <img src="../reel4.jpg" alt="Reel 4" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="relative aspect-[9/16] w-full overflow-hidden bg-[#1c1b1c]">
+              <img src="../reel4.jpg" alt="" onerror="handleImgError(this, 4)" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 z-10">
               
-              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              <div class="fallback-card-ui hidden absolute inset-0 flex flex-col items-center justify-center p-4 bg-gradient-to-b from-[#201f20] to-[#131314] text-center">
+                <span class="material-symbols-outlined text-4xl text-primary/40 mb-2">movie</span>
+                <span class="text-xs font-label-md tracking-widest text-on-surface-variant uppercase">Reel 04</span>
+              </div>
 
-              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20"></div>
+
+              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-30">
                 <div class="w-14 h-14 rounded-full bg-primary/95 text-black flex items-center justify-center shadow-[0_0_30px_rgba(255,205,130,0.85)] transform scale-75 group-hover:scale-100 transition-transform">
                   <span class="material-symbols-outlined text-3xl fill-1">play_arrow</span>
                 </div>
@@ -458,15 +517,20 @@
       <!-- Reel 5 -->
       <div class="card-3d-wrapper" data-category="trending">
         <div class="float-container float-card-1">
-          <a href="https://www.instagram.com/nexussnips/reel/DbdUy2BEprH/" target="_blank" rel="noopener noreferrer" class="block card-3d-inner overflow-hidden border border-white/10 bg-surface-container-low shadow-2xl group">
+          <a href="https://www.instagram.com/nexussnips/reel/DbdUy2BEprH/" target="_blank" rel="noopener noreferrer" class="block card-3d-inner overflow-hidden border border-white/10 bg-surface-container-low shadow-2xl group reel-card-box">
             <div class="sheen"></div>
             
-            <div class="relative aspect-[9/16] w-full overflow-hidden">
-              <img src="../reel5.jpg" alt="Reel 5" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="relative aspect-[9/16] w-full overflow-hidden bg-[#1c1b1c]">
+              <img src="../reel5.jpg" alt="" onerror="handleImgError(this, 5)" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 z-10">
               
-              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              <div class="fallback-card-ui hidden absolute inset-0 flex flex-col items-center justify-center p-4 bg-gradient-to-b from-[#201f20] to-[#131314] text-center">
+                <span class="material-symbols-outlined text-4xl text-primary/40 mb-2">movie</span>
+                <span class="text-xs font-label-md tracking-widest text-on-surface-variant uppercase">Reel 05</span>
+              </div>
 
-              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20"></div>
+
+              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-30">
                 <div class="w-14 h-14 rounded-full bg-primary/95 text-black flex items-center justify-center shadow-[0_0_30px_rgba(255,205,130,0.85)] transform scale-75 group-hover:scale-100 transition-transform">
                   <span class="material-symbols-outlined text-3xl fill-1">play_arrow</span>
                 </div>
@@ -479,15 +543,20 @@
       <!-- Reel 6 -->
       <div class="card-3d-wrapper" data-category="series">
         <div class="float-container float-card-2">
-          <a href="https://www.instagram.com/nexussnips/reel/DS0IkysEhmJ/" target="_blank" rel="noopener noreferrer" class="block card-3d-inner overflow-hidden border border-white/10 bg-surface-container-low shadow-2xl group">
+          <a href="https://www.instagram.com/nexussnips/reel/DS0IkysEhmJ/" target="_blank" rel="noopener noreferrer" class="block card-3d-inner overflow-hidden border border-white/10 bg-surface-container-low shadow-2xl group reel-card-box">
             <div class="sheen"></div>
             
-            <div class="relative aspect-[9/16] w-full overflow-hidden">
-              <img src="../reel6.jpg" alt="Reel 6" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="relative aspect-[9/16] w-full overflow-hidden bg-[#1c1b1c]">
+              <img src="../reel6.jpg" alt="" onerror="handleImgError(this, 6)" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 z-10">
               
-              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              <div class="fallback-card-ui hidden absolute inset-0 flex flex-col items-center justify-center p-4 bg-gradient-to-b from-[#201f20] to-[#131314] text-center">
+                <span class="material-symbols-outlined text-4xl text-primary/40 mb-2">movie</span>
+                <span class="text-xs font-label-md tracking-widest text-on-surface-variant uppercase">Reel 06</span>
+              </div>
 
-              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20"></div>
+
+              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-30">
                 <div class="w-14 h-14 rounded-full bg-primary/95 text-black flex items-center justify-center shadow-[0_0_30px_rgba(255,205,130,0.85)] transform scale-75 group-hover:scale-100 transition-transform">
                   <span class="material-symbols-outlined text-3xl fill-1">play_arrow</span>
                 </div>
@@ -500,15 +569,20 @@
       <!-- Reel 7 -->
       <div class="card-3d-wrapper" data-category="movies">
         <div class="float-container float-card-3">
-          <a href="https://www.instagram.com/nexussnips/reel/DRg6kpSEiMs/" target="_blank" rel="noopener noreferrer" class="block card-3d-inner overflow-hidden border border-white/10 bg-surface-container-low shadow-2xl group">
+          <a href="https://www.instagram.com/nexussnips/reel/DRg6kpSEiMs/" target="_blank" rel="noopener noreferrer" class="block card-3d-inner overflow-hidden border border-white/10 bg-surface-container-low shadow-2xl group reel-card-box">
             <div class="sheen"></div>
             
-            <div class="relative aspect-[9/16] w-full overflow-hidden">
-              <img src="../reel7.jpg" alt="Reel 7" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="relative aspect-[9/16] w-full overflow-hidden bg-[#1c1b1c]">
+              <img src="../reel7.jpg" alt="" onerror="handleImgError(this, 7)" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 z-10">
               
-              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              <div class="fallback-card-ui hidden absolute inset-0 flex flex-col items-center justify-center p-4 bg-gradient-to-b from-[#201f20] to-[#131314] text-center">
+                <span class="material-symbols-outlined text-4xl text-primary/40 mb-2">movie</span>
+                <span class="text-xs font-label-md tracking-widest text-on-surface-variant uppercase">Reel 07</span>
+              </div>
 
-              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20"></div>
+
+              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-30">
                 <div class="w-14 h-14 rounded-full bg-primary/95 text-black flex items-center justify-center shadow-[0_0_30px_rgba(255,205,130,0.85)] transform scale-75 group-hover:scale-100 transition-transform">
                   <span class="material-symbols-outlined text-3xl fill-1">play_arrow</span>
                 </div>
@@ -521,15 +595,20 @@
       <!-- Reel 8 -->
       <div class="card-3d-wrapper" data-category="trending">
         <div class="float-container float-card-4">
-          <a href="https://www.instagram.com/nexussnips/reel/DdJeKIUBv1o/" target="_blank" rel="noopener noreferrer" class="block card-3d-inner overflow-hidden border border-white/10 bg-surface-container-low shadow-2xl group">
+          <a href="https://www.instagram.com/nexussnips/reel/DdJeKIUBv1o/" target="_blank" rel="noopener noreferrer" class="block card-3d-inner overflow-hidden border border-white/10 bg-surface-container-low shadow-2xl group reel-card-box">
             <div class="sheen"></div>
             
-            <div class="relative aspect-[9/16] w-full overflow-hidden">
-              <img src="../reel8.jpg" alt="Reel 8" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="relative aspect-[9/16] w-full overflow-hidden bg-[#1c1b1c]">
+              <img src="../reel8.jpg" alt="" onerror="handleImgError(this, 8)" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 z-10">
               
-              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              <div class="fallback-card-ui hidden absolute inset-0 flex flex-col items-center justify-center p-4 bg-gradient-to-b from-[#201f20] to-[#131314] text-center">
+                <span class="material-symbols-outlined text-4xl text-primary/40 mb-2">movie</span>
+                <span class="text-xs font-label-md tracking-widest text-on-surface-variant uppercase">Reel 08</span>
+              </div>
 
-              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20"></div>
+
+              <div class="layer-pop absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-30">
                 <div class="w-14 h-14 rounded-full bg-primary/95 text-black flex items-center justify-center shadow-[0_0_30px_rgba(255,205,130,0.85)] transform scale-75 group-hover:scale-100 transition-transform">
                   <span class="material-symbols-outlined text-3xl fill-1">play_arrow</span>
                 </div>
@@ -542,15 +621,20 @@
       <!-- Reel 9 -->
       <div class="card-3d-wrapper" data-category="movies">
         <div class="float-container float-card-2">
-          <a href="https://www.instagram.com/nexussnips/reel/Dbf5XoqErKX/" target="_blank" rel="noopener noreferrer" class="block card-3d-inner overflow-hidden border border-white/10 bg-surface-container-low shadow-2xl group">
+          <a href="https://www.instagram.com/nexussnips/reel/Dbf5XoqErKX/" target="_blank" rel="noopener noreferrer" class="block card-3d-inner overflow-hidden border border-white/10 bg-surface-container-low shadow-2xl group reel-card-box">
             <div class="sheen"></div>
             
-            <div class="relative aspect-[9/16] w-full overflow-hidden">
-              <img src="../reel9.jpg" alt="Reel 9" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="relative aspect-[9/16] w-full overflow-hidden bg-[#1c1b1c]">
+              <img src="../reel9.jpg" alt="" onerror="handleImgError(this, 9)" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 z-10">
               
-              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              <div class="fallback-card-ui hidden absolute inset-0 flex flex-col items-center justify-center p-4 bg-gradient-to-b from-[#201f20] to-[#131314] text-center">
+                <span class="material-symbols-outlined text-4xl text-primary/40 mb-2">movie</span>
+                <span class="text-xs font-label-md tracking-widest text-on-surface-variant uppercase">Reel 09</span>
+              </div>
 
-              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20"></div>
+
+              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-30">
                 <div class="w-14 h-14 rounded-full bg-primary/95 text-black flex items-center justify-center shadow-[0_0_30px_rgba(255,205,130,0.85)] transform scale-75 group-hover:scale-100 transition-transform">
                   <span class="material-symbols-outlined text-3xl fill-1">play_arrow</span>
                 </div>
@@ -687,7 +771,7 @@
       initFlowStream('all');
     });
 
-    /* 5. 3D Flow Stream Carousel (ONLY YOUR UPLOADED IMAGES, NO OTHER IMAGES) */
+    /* 5. 3D Flow Stream Carousel */
     const reelsData = [
       { id: 1, link: "https://www.instagram.com/nexussnips/reel/Db0f0pHEoAS/", img: "../reel1.jpg", category: "movies" },
       { id: 2, link: "https://www.instagram.com/nexussnips/reel/Dbie8_uElHD/", img: "../reel2.jpg", category: "trending" },
@@ -719,11 +803,19 @@
       flowTrack.innerHTML = '';
       filteredFlowData.forEach((item, index) => {
         const el = document.createElement('div');
-        el.className = 'flow-item overflow-hidden bg-surface-container-low border border-white/10 shadow-2xl group';
+        el.className = 'flow-item overflow-hidden bg-surface-container-low border border-white/10 shadow-2xl group reel-card-box';
         el.innerHTML = `
-          <div class="relative w-full h-full">
-            <img src="${item.img}" alt="Reel" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+          <div class="relative w-full h-full bg-[#1c1b1c] overflow-hidden">
+            <img src="${item.img}" 
+                 alt="" 
+                 onerror="handleImgError(this, ${item.id})" 
+                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 z-10">
             
+            <div class="fallback-card-ui hidden absolute inset-0 flex flex-col items-center justify-center p-4 bg-gradient-to-b from-[#201f20] to-[#131314] text-center">
+              <span class="material-symbols-outlined text-4xl text-primary/40 mb-2">movie</span>
+              <span class="text-xs font-label-md tracking-widest text-on-surface-variant uppercase">Reel 0${item.id}</span>
+            </div>
+
             <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity z-20">
               <div class="w-16 h-16 rounded-full bg-primary text-black flex items-center justify-center shadow-[0_0_35px_rgba(255,205,130,0.9)] transform hover:scale-110 transition-transform">
                 <span class="material-symbols-outlined text-3xl fill-1">play_arrow</span>
